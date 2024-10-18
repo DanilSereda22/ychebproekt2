@@ -16,7 +16,7 @@ SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY','cg#p$g+j9tax!#a3cup@1$8obt2_+&k
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
 
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['DanilSereda22.pythonanywhere.com']
 
 
 # Application definition
@@ -32,9 +32,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
-
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,28 +90,19 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     },
 ]
-
-
 # Internationalization
-# https://docs.djangoproject.com/en/4.2/topics/i18n/
-
+# https://docs.djangoproject.com/en/5.1/topics/i18n/
 LANGUAGE_CODE = 'ru-ru'
-
 TIME_ZONE = 'Europe/Moscow'
-
+USE_L10N = True
 USE_I18N = True
-
 USE_TZ = True
-
-
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.2/howto/static-files/
-
+# https://docs.djangoproject.com/en/5.1/howto/static-files/
 STATIC_URL = 'static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
-
+# Default primary key field type
+# https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 LOGIN_REDIRECT_URL = '/'
-
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
