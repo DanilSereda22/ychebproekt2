@@ -8,6 +8,7 @@ from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 
+
 def index(request):
  num_books = Book.objects.all().count()
  num_instances = BookInstance.objects.all().count()
