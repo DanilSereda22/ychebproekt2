@@ -4,11 +4,15 @@ from django.http import HttpResponse
 from django.views import generic
 from .forms import AuthorsForm
 from .forms import UserForm
+from .forms import ImageForm
+from .models import Person
+from .models import Image
 from django.shortcuts import redirect
 from django.http import *
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
+
 
 
 def index(request):
@@ -129,11 +133,13 @@ def table_1(request):
     return render(request, "boob/table_1.html")
 def index(request):
  return render(request, "firstapp/index.html")
+
+def index(request):
+ return render(request, "firstapp/index.html")
 def about(request):
  return render(request, "firstapp/about.html")
 def contact(request):
  return render(request, "firstapp/contact.html")
-
 def index(request):
  my_kv = ['I квартал ->', 'II квартал ->', 'III квартал->',
  'IV квартал->']
@@ -143,15 +149,59 @@ def index(request):
  'Октябрь', 'Ноябрь', 'Декабрь']
  context = {'my_month': my_month, 'my_kv': my_kv}
  return render(request, "firstapp/index.html", context)
+
 def index(request):
  my_text = 'Изучаем формы Django'
- context = {'my_text': my_text}
+ people_kol = Person.object_person.count()
+ context = {'my_text': my_text,"people_kol": people_kol}
  return render(request, "firstapp/index.html", context)
 def about(request):
  return render(request, "firstapp/about.html")
 def contact(request):
  return render(request, "firstapp/contact.html")
+
 def my_form(request):
- my_form = UserForm()
- context = {"form": my_form}
- return render(request, "firstapp/my_form.html", context)
+ if request.method == "POST": 
+  form = UserForm(request.POST) 
+  if form.is_valid(): 
+    form.save()
+ my_text = 'Сведения о клиентах'
+ people = Person.object_person.all()
+ form = UserForm()
+ context = {'my_text': my_text, "people": people, "form": form}
+ return render(request, "my_form.html", context)
+
+def edit_form(request, id):
+ person = Person.object_person.get(id=id)
+ if request.method == "POST":
+  person.name = request.POST.get("name")
+  person.age = request.POST.get("age")
+  person.save()
+  return redirect('my_form')
+ data = {"person": person}
+ return render(request, "edit_form.html", context=data)
+def delete(request, id):
+ try:
+  person = Person.object_person.get(id=id)
+  person.delete()
+  return redirect('my_form')
+ except Person.DoesNotExist:
+  return HttpResponseNotFound("<h2>Объект не найден</h2>")
+ 
+def form_up_img(request):
+ if request.method == 'POST':
+  form = ImageForm(request.POST, request.FILES)
+  if form.is_valid():
+   form.save()
+ my_text = 'Загруженные изображения'
+ my_img = Image.obj_img.all()
+ form = ImageForm()
+ context = {'my_text': my_text, "my_img": my_img, "form": form}
+ return render(request, 'firstapp/form_up_img.html', context)
+def delete_img(request, id):
+ try:
+  img = Image.obj_img.get(id=id)
+  img.delete()
+  return redirect('form_up_img')
+ except Person.DoesNotExist:
+  return HttpResponseNotFound("<h2>Объект не найден</h2>")
