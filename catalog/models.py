@@ -78,7 +78,7 @@ class Book(models.Model):
  on_delete=models.CASCADE,
  help_text="Выберите язык книги",
  verbose_name="Язык книги", null=True)
- publisher = models.ForeignKey('Publisher',
+ publisher = models.ForeignKey(Publisher,
  on_delete=models.CASCADE,
  help_text="Выберите издательство",
  verbose_name="Издательство", null=True)
@@ -136,10 +136,6 @@ class BookInstance(models.Model):
   ordering = ["due_back"]
  def __str__(self):
   return '%s %s %s' % (self.inv_nom, self.book, self.status)
- 
- 
-
-
 
 class Person(models.Model):
  name = models.CharField(max_length=20,
