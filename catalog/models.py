@@ -34,7 +34,7 @@ class Language(models.Model):
  help_text=" Введите язык книги", verbose_name="Язык книги")
  def __str__(self):
    return self.name
-
+ 
 class Publisher(models.Model):
  name = models.CharField(max_length=20,
  help_text=" Введите наименование издательства",
@@ -61,7 +61,11 @@ class Author(models.Model):
  null=True, blank=True)
  def __str__(self):
   return self.last_name
-
+ def display_author(self):
+   return ', '.join([author.last_name for author in
+    self.author.all()])
+ display_author.short_description = 'Авторы'
+ 
 class Book(models.Model):
  title = models.CharField(max_length=200,
  help_text="Введите название книги",
@@ -96,19 +100,21 @@ class Book(models.Model):
  photo = models.ImageField(upload_to='images',
  help_text="Введите изображение обложки",
  verbose_name="Изображение обложки")
-
  def __str__(self):
   return self.title
  def get_absolute_url(self):
   return reverse('book-detail', args=[str(self.id)])
-
+ def display_author(self):
+  return ', '.join([author.last_name for author in self.author.all()])
+ display_author.short_description = 'Авторы'
+ 
 class Status(models.Model):
  name = models.CharField(max_length=20,
  help_text="Введите статус экземпляра книги",
  verbose_name="Статус экземпляра книги")
  def __str__(self):
   return self.name
-
+ 
 class BookInstance(models.Model):
  book = models.ForeignKey('Book',
  on_delete=models.CASCADE, null=True)
@@ -126,11 +132,14 @@ class BookInstance(models.Model):
  blank=True,
  help_text="Введите конец срока статуса",
  verbose_name="Дата окончания статуса")
-
  class Meta:
   ordering = ["due_back"]
  def __str__(self):
   return '%s %s %s' % (self.inv_nom, self.book, self.status)
+ 
+ 
+
+
 
 class Person(models.Model):
  name = models.CharField(max_length=20,
@@ -173,7 +182,7 @@ class Image(models.Model):
   obj_img = models.Manager()
   def __str__(self):
    return self.title
-
+  
 class File(models.Model):
  title = models.CharField(max_length=100,
  verbose_name="Описание файла",)
@@ -182,7 +191,7 @@ class File(models.Model):
  null=True, blank=True)
  def __str__(self):
   return self.title
-
+ 
 class VideoFile(models.Model):
  title = models.CharField(max_length=100,
  verbose_name="Описание файла",)
@@ -192,7 +201,7 @@ class VideoFile(models.Model):
  obj_video = models.Manager()
  def __str__(self):
   return self.title
-
+ 
 class AudioFile(models.Model):
  title = models.CharField(max_length=100,
  verbose_name="Описание файла",)
