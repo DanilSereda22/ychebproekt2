@@ -1,6 +1,9 @@
 from pathlib import Path
 import os
 import dj_database_url
+from dotenv import load_dotenv  
+
+load_dotenv()
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -12,13 +15,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 #SECRET_KEY = 'django-insecure-9l!9y%9@+0cybnd%+wg6-!l(7_3y@a=^vf$6it6vyk6wa#v5uc'
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY',
 'cg#p$g+j9tax!#a3cup@1$8obt2_+&k3q+pmu)5%asj6yjpkag')
+SECRET_KEY = os.environ.get("SECRET_KEY")  
 
+if os.environ.get("DEBUG") == "False":
+    DEBUG = False
+else:
+    DEBUG = True
 
 # SECURITY WARNING: don't run with debug turned on in production!
 #DEBUG = True
 DEBUG = bool(os.environ.get('DJANGO_DEBUG', True))
-
-ALLOWED_HOSTS = []
+SESSION_COOKIE_SECURE = True  
+CSRF_COOKIE_SECURE = True
+ALLOWED_HOSTS = ["127.0.0.1", "DabilSereda.pythonanywhere.com"]
 
 
 # Application definition
@@ -70,9 +79,19 @@ WSGI_APPLICATION = 'WebBooks.wsgi.application'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    "default": {  
+        "ENGINE": "django.db.backends.mysql",  
+        "NAME": os.getenv("MYSQL_DBNAME"),  
+        "USER": os.getenv("MYSQL_USER"),  
+        "PASSWORD": os.getenv("MYSQL_PASSWORD"),  
+        "HOST": os.getenv("MYSQL_HOST"),  
+        "OPTIONS": {  
+            "init_command": "SET NAMES 'utf8mb4';SET sql_mode = 'STRICT_TRANS_TABLES'",  
+            "charset": "utf8mb4",  
+        },  
     }
 }
 
@@ -112,6 +131,10 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = BASE_DIR / "static/"  
+MEDIA_URL = "media/"  
+MEDIA_ROOT = BASE_DIR / "media/"
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
