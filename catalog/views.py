@@ -18,7 +18,10 @@ from .models import VideoFile
 from .forms import VideoForm
 from .models import AudioFile
 from .forms import AudioForm
-
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import generic
+from .forms import Form_add_author
+from django.urls import reverse
 
 
 def index(request):
@@ -64,43 +67,56 @@ class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
  paginate_by = 10
  def get_queryset(self):
     return BookInstance.objects.filter(borrower=self.request.user).filter(status__exact='2').order_by('due_back')
- 
 
-def authors_add(request):
+def edit_authors(request):
  author = Author.objects.all()
- authorsform = AuthorsForm()
- return render(request, "catalog/authors_add.html",
- {"form": authorsform, "author": author})
+ context = {'author': author}
+ return render(request, "catalog/edit_authors.html", context)
 
-def create(request):
- if request.method == "POST":
-  author = Author()
-  author.first_name = request.POST.get("first_name")
-  author.last_name = request.POST.get("last_name")
-  author.date_of_birth = request.POST.get("date_of_birth")
-  author.date_of_death = request.POST.get("date_of_death")
-  author.save()
-  return HttpResponseRedirect("/authors_add/")
+
+def add_author(request):
+    if request.method == 'POST':
+        form = Form_add_author(request.POST, request.FILES)
+        if form.is_valid():
+            first_name = form.cleaned_data.get("first_name")
+            last_name = form.cleaned_data.get("last_name")
+            date_of_birth = form.cleaned_data.get("date_of_birth")
+            about = form.cleaned_data.get("about")
+            photo = form.cleaned_data.get("photo")
+            obj = Author.objects.create(
+                first_name=first_name,
+                last_name=last_name,
+                date_of_birth=date_of_birth,
+                about=about,
+                photo=photo
+            )
+            obj.save()
+            return redirect('authors_list')  # Перенаправление на список авторов
+        else:
+            form = Form_add_author()  # Передача невалидной формы в шаблон
+            return render(request, "catalog/authors_add.html", {'form': form})  # Рендеринг формы
+    else:
+        form = Form_add_author()
+        return render(request, "catalog/authors_add.html", {'form': form})
+
+# def create(request):
+#  if request.method == "POST":
+#   author = Author()
+#   author.first_name = request.POST.get("first_name")
+#   author.last_name = request.POST.get("last_name")
+#   author.date_of_birth = request.POST.get("date_of_birth")
+#   author.date_of_death = request.POST.get("date_of_death")
+#   author.save()
+#   return HttpResponseRedirect("/authors_add/")
 
 def delete(request, id):
  try:
   author = Author.objects.get(id=id)
   author.delete()
-  return HttpResponseRedirect("/authors_add/")
- except Author.DoesNotExist:
+  return HttpResponseRedirect("/edit_authors/")
+ except:
   return HttpResponseNotFound("<h2>Автор не найден</h2>")
 
-def edit1(request, id):
- author = Author.objects.get(id=id)
- if request.method == "POST":
-   author.first_name = request.POST.get("first_name")
-   author.last_name = request.POST.get("last_name")
-   author.date_of_birth = request.POST.get("date_of_birth")
-   author.date_of_death = request.POST.get("date_of_death")
-   author.save()
-   return HttpResponseRedirect("/authors_add/")
- else:
-  return render(request, "edit1.html", {"author": author})
  
 class BookCreate(CreateView):
  model = Book
@@ -140,6 +156,15 @@ def contact(request):
  'tel': tel,
  'email': email}
  return render(request, 'catalog/contact.html', context)
+
+class LoanedBooksByUserListView(LoginRequiredMixin, generic.ListView):
+ model = BookInstance
+ template_name = 'catalog/bookinstance_list_borrowed_user.html'
+ paginate_by = 10
+ def get_queryset(self):
+  return BookInstance.objects.filter(
+ borrower=self.request.user).filter(
+ status__exact='2').order_by('due_back')
 
 # def start1(request):
 #     return render(request, "boob/start1.html")
