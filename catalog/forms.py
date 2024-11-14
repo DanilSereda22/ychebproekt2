@@ -7,6 +7,7 @@ from .models import Image
 from .models import File 
 from .models import VideoFile
 from .models import AudioFile
+from .models import Author
 
 class AuthorsForm(forms.Form):
  first_name = forms.CharField(label="Имя автора")
@@ -17,7 +18,7 @@ class AuthorsForm(forms.Form):
  date_of_death = forms.DateField(label="Дата смерти",
         initial=format(date.today()),
         widget=forms.widgets.DateInput(attrs={'type': 'date'}))
- 
+
 class BookModelForm(ModelForm):
  class Meta:
   model = Book
@@ -27,11 +28,13 @@ class UserForm(ModelForm):
    class Meta:
      model = Person
      fields = ['name','age']
+
 class ImageForm(forms.ModelForm):
  class Meta:
    model = Image
    fields = '__all__'
 #    fields = ['title', 'image']
+
 class FileForm(forms.ModelForm):
  class Meta:
   model = File
@@ -57,3 +60,13 @@ class Form_add_author(forms.Form):
  about = forms.CharField(label="Сведения об авторе",
  widget=forms.Textarea)
  photo = forms.ImageField(label="Фото автора")
+
+class Form_edit_author(forms.ModelForm):
+ class Meta:
+  model = Author
+  fields = '__all__'
+
+class BookModelForm(forms.ModelForm):
+ class Meta:
+  model = Book
+  fields = '__all__'
