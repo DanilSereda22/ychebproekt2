@@ -35,10 +35,8 @@ from .serializers import ArticleSerializer
 from rest_framework.generics import get_object_or_404
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin
+from rest_framework import viewsets
 from rest_framework.generics import ListCreateAPIView,RetrieveAPIView,RetrieveUpdateAPIView,RetrieveUpdateDestroyAPIView
-
-
-
 
 
 def index(request):
@@ -109,7 +107,6 @@ def add_author(request):
         form = Form_add_author()
         return render(request, "catalog/authors_add.html", {'form': form})
 
- 
 def edit_author(request, id):
   author = Author.objects.get(id=id)
   if request.method == 'POST':
@@ -127,7 +124,6 @@ def edit_authors(request):
  author = Author.objects.all()
  context = {'author': author}
  return render(request, "catalog/edit_authors.html", context)
-
 
 def create(request):
  if request.method == "POST":
@@ -167,12 +163,22 @@ class BookDelete(DeleteView):
  model = Book
  success_url = reverse_lazy('edit_books')
 
-class ArticleView(ListCreateAPIView):
-  queryset = Article.objects.all()
+class ArticleViewSet(viewsets.ModelViewSet):
   serializer_class = ArticleSerializer
+  queryset = Article.objects.all()
   def perform_create(self, serializer):
     author = get_object_or_404(Author, id=self.request.data.get('author_id'))
     return serializer.save(author=author)
+  def list(self, request):
+    queryset = Article.objects.all()
+    serializer = ArticleSerializer(queryset, many=True)
+    return Response(serializer.data)
+  def retrieve(self, request, pk=None):
+    queryset = Article.objects.all()
+    user = get_object_or_404(queryset, pk=pk)
+    serializer = ArticleSerializer(user)
+    return Response(serializer.data)
+
   
 class SingleArticleView(RetrieveAPIView):
   queryset = Article.objects.all()
