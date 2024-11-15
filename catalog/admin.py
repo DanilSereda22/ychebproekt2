@@ -1,13 +1,15 @@
 from django.contrib import admin
-from.models import Author, Book, Genre, Language, Status, BookInstance, Publisher
+from.models import Author,Article, Book, Genre, Language, Status, BookInstance, Publisher
 from django.utils.html import format_html
-#admin.site.register(Author) 
+# admin.site.register(Author) 
+admin.site.register(Article)
 # admin.site.register(Book) 
 admin.site.register(Genre) 
 admin.site.register(Language)
 admin.site.register(Publisher) 
 admin.site.register(Status) 
 #admin.site.register(BookInstance)
+
 
 class AuthorAdmin(admin.ModelAdmin):
     list_display = ('last_name', 'first_name','date_of_birth', 'photo', 'show_photo')

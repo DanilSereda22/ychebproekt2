@@ -65,6 +65,16 @@ class Author(models.Model):
    return ', '.join([author.last_name for author in
     self.author.all()])
  display_author.short_description = 'Авторы'
+
+
+class Article(models.Model):
+ title = models.CharField(max_length=120)
+ description = models.TextField()
+ body = models.TextField()
+ author = models.ForeignKey('Author', related_name='articles', on_delete=models.CASCADE)
+ def __str__(self):
+  return self.title
+
  
 class Book(models.Model):
  title = models.CharField(max_length=200,

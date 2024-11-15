@@ -4,9 +4,11 @@ from catalog import views
 from django.conf import settings
 from django.conf.urls.static import static
 
+
 urlpatterns = [
  path('', views.index, name='index'),
  path('admin/', admin.site.urls),
+ path('api/', include('catalog.urls')),
  path('accounts/', include('django.contrib.auth.urls')),
  path('books/', views.BookListView.as_view(), name='books-list'),
  path('books/<int:pk>/', views.BookDetailView.as_view(), name='book-detail'),
