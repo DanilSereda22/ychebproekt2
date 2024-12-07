@@ -128,6 +128,13 @@ def table(request):
 def table_1(request):
     return render(request, "boob/table_1.html")
 def index(request):
+ return render(request, "firstapp/index.html")
+def about(request):
+ return render(request, "firstapp/about.html")
+def contact(request):
+ return render(request, "firstapp/contact.html")
+
+def index(request):
  my_kv = ['I квартал ->', 'II квартал ->', 'III квартал->',
  'IV квартал->']
  my_month = ['Январь', 'Февраль', 'Март',
@@ -136,17 +143,15 @@ def index(request):
  'Октябрь', 'Ноябрь', 'Декабрь']
  context = {'my_month': my_month, 'my_kv': my_kv}
  return render(request, "firstapp/index.html", context)
-
+def index(request):
+ my_text = 'Изучаем формы Django'
+ context = {'my_text': my_text}
+ return render(request, "firstapp/index.html", context)
 def about(request):
  return render(request, "firstapp/about.html")
 def contact(request):
  return render(request, "firstapp/contact.html")
-
 def my_form(request):
-    if request.method == 'POST':
-        form = UserForm(request.POST, request.FILES)
-        if form.is_valid():
-            return redirect('my_form/')
-    else:
-        form = UserForm()
-    return render(request, "firstapp/my_form.html", {'form': form})
+ my_form = UserForm()
+ context = {"form": my_form}
+ return render(request, "firstapp/my_form.html", context)
