@@ -3,6 +3,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from django.views import generic
 from .forms import AuthorsForm
+from .forms import UserForm
+from django.shortcuts import redirect
 from django.http import *
 from django.shortcuts import render
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -139,3 +141,12 @@ def about(request):
  return render(request, "firstapp/about.html")
 def contact(request):
  return render(request, "firstapp/contact.html")
+
+def my_form(request):
+    if request.method == 'POST':
+        form = UserForm(request.POST, request.FILES)
+        if form.is_valid():
+            return redirect('my_form/')
+    else:
+        form = UserForm()
+    return render(request, "firstapp/my_form.html", {'form': form})
